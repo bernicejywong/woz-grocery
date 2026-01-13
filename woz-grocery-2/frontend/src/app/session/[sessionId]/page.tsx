@@ -14,6 +14,8 @@ type TranscriptMessage = {
   message: string;
   tone?: string;
   notes?: string;
+  imageDataUrl?: string;
+  imageName?: string;
 };
 
 type SessionState = {
