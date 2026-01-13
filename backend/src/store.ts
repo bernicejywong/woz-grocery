@@ -20,7 +20,7 @@ export type LogRow = {
   userMessage: string;
   response: string;
   //If wizard attached an image, store the original filename for logging
-  imagName?: string;
+  imageName?: string;
   tone: string;
   notes: string;
   wizardMessageId: string; // link to transcript message
