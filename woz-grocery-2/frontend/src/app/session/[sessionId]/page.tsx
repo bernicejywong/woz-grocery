@@ -99,7 +99,7 @@ export default function ParticipantSessionPage({ params }: { params: { sessionId
     requestAnimationFrame(() => {
       el.scrollTo({ top: el.scrollHeight, behavior: "auto" });
     });
-  }, [transcript. Length]);
+  }, [transcript.length]);
 
   async function logout() {
     try {
