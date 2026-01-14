@@ -126,18 +126,18 @@ export default function WizardPage({ params }: { params: { sessionId: string } }
     setAttachedImage(null);
   }
 
-  async function exportCsv() {
-    const base = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
-    const url = `${base}/session/${sessionId}/export.csv`;
-    window.location.href = url;
-  }
+  function exportCsv() {
+  window.location.href = `/session/${sessionId}/export.csv`;
+}
 
   async function reset() {
-    const base = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
-    await fetch(`${base}/session/${sessionId}/reset`, { method: "POST", credentials: "include" }).catch(() => {});
-    socket.emit("reset_session", { sessionId });
-  }
+  await fetch(`/session/${sessionId}/reset`, {
+    method: "POST",
+    credentials: "include",
+  }).catch(() => {});
 
+  socket.emit("reset_session", { sessionId });
+}
 
   function updateLogRow(logId: string, patch: Partial<Pick<LogRow, "notes">>) {
     socket.emit("update_log_row", { sessionId, logId, ...patch });
@@ -264,27 +264,6 @@ export default function WizardPage({ params }: { params: { sessionId: string } }
             </div>
 
             )}
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = () => {
-                  const dataUrl = String(reader.result || "");
-                  setAttachedImage({ dataUrl, name: file.name });
-                };
-                reader.readAsDataURL(file);
-
-                // allow selecting the same file again later
-                e.currentTarget.value = "";
-              }}
-            />
 
             <div className={styles.actions}>
               <button
