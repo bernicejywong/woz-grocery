@@ -27,6 +27,9 @@ async function onSubmit(e: React.FormEvent) {
   setError(null);
 
   try {
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), 8000);
+    
     const res = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
