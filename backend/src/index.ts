@@ -35,7 +35,7 @@ async function main() {
  
   const app = express();
 
-  app.use(express.json());
+  const jsonParser = express.json();
  
   // CORS is only needed if your frontend is on a different origin.
 
@@ -61,7 +61,7 @@ async function main() {
  
   // --- your existing REST routes (keep as-is) ---
 
-  app.post("/session/create", (req, res) => {
+  app.post("/session/create", jsonParser, (req, res) => {
 
     // keep your current handler OR your new sessionId logic here
 
@@ -83,7 +83,7 @@ async function main() {
 
   });
  
-  app.post("/session/:sessionId/reset", (req, res) => {
+  app.post("/session/:sessionId/reset", jsonParser, (req, res) => {
 
     const sessionId = req.params.sessionId;
 
