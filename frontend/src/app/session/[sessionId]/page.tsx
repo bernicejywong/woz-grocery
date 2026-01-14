@@ -29,11 +29,6 @@ export default function ParticipantSessionPage({ params }: { params: { sessionId
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const backendUrl = useMemo(
-    () => process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000",
-    []
-  );
-
   const [draft, setDraft] = useState("");
   const [transcript, setTranscript] = useState<TranscriptMessage[]>([]);
   const [connected, setConnected] = useState(false);
@@ -55,12 +50,13 @@ export default function ParticipantSessionPage({ params }: { params: { sessionId
 
   // Socket connection
   useEffect(() => {
-    const s = io(backendUrl, {
-      transports: ["websocket"],
-      reconnection: true,
-      reconnectionAttempts: 20,
-      reconnectionDelay: 500
-    });
+   const s = io({
+    transports: ["websocket", "polling"],
+    withCredentials: true,
+    reconnection: true,
+    reconnectionAttempts: 20,
+    reconnectionDelay: 500
+  });
 
     socketRef.current = s;
 
@@ -90,7 +86,7 @@ export default function ParticipantSessionPage({ params }: { params: { sessionId
       s.disconnect();
       socketRef.current = null;
     };
-  }, [backendUrl, sessionId]);
+  }, [sessionId]);
 
   // Auto-scroll
   useLayoutEffect(() => {
