@@ -186,14 +186,20 @@ export default function WizardPage({ params }: { params: { sessionId: string } }
                     {m.id} className={`${styles.msg} ${m.role === "participant" ? styles.msgUser : ""}`}>
                     <div>{m.message ? (
                         <div className={styles.msgText}>
-                          <ReactMarkdown
-                            components={{
-                              p: ({ children }) => <p style={{ margin: "0 0 10px 0" }}>{children}</p>,
-                              strong: ({ children }) => <strong>{children}</strong>,
-                            }}
-                          >
-                            {m.message}
-                          </ReactMarkdown>
+                          <div className={styles.bubbleText}>
+                              <ReactMarkdown
+                                components={{
+                                  p: ({ children }) => <p style={{ margin: "0 0 10px 0" }}>{children}</p>,
+                                  strong: ({ children }) => <strong>{children}</strong>,
+                                  em: ({ children }) => <em>{children}</em>,
+                                  ul: ({ children }) => <ul style={{ margin: "0 0 10px 18px" }}>{children}</ul>,
+                                  ol: ({ children }) => <ol style={{ margin: "0 0 10px 18px" }}>{children}</ol>,
+                                  li: ({ children }) => <li style={{ marginBottom: 4 }}>{children}</li>,
+                                }}
+                              >
+                                {m.message}
+                              </ReactMarkdown>
+                            </div>
                         </div>
                       ) : null} 
                     {m.imageDataUrl ? (
@@ -300,13 +306,13 @@ export default function WizardPage({ params }: { params: { sessionId: string } }
             </div>
 
             <div className={styles.guidelines}>
-              <div className={styles.guidelinesTitle}>Guidelines</div>
+              <div className={styles.guidelinesTitle}>Markdown How-to</div>
               <ul>
-                <li>No emojis, no humor, no corporate tone</li>
-                <li>Ask permission before cart/list changes</li>
-                <li>Never imply checkout/payment</li>
-                <li>No medical advice</li>
-                <li>Be clear, practical, inclusive</li>
+                <li>**bold**</li>
+                <li>*italic*</li>
+                <li>* item for bulleted lists</li>
+                <li>1. item for numbered lists/li>
+                <li>shift return for paragraph breaks</li>
               </ul>
             </div>
           </section>

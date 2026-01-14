@@ -192,15 +192,19 @@ export default function ParticipantSessionPage({ params }: { params: { sessionId
                         />
                       )}
                       <div className={styles.bubbleText}>
-                        <ReactMarkdown
-                          components={{
-                            p: ({ children }) => <p style={{ margin: "0 0 10px 0" }}>{children}</p>,
-                            strong: ({ children }) => <strong>{children}</strong>,
-                          }}
-                        >
-                          {m.message}
-                        </ReactMarkdown>
-                      </div>
+                          <ReactMarkdown
+                            components={{
+                              p: ({ children }) => <p style={{ margin: "0 0 10px 0" }}>{children}</p>,
+                              strong: ({ children }) => <strong>{children}</strong>,
+                              em: ({ children }) => <em>{children}</em>,
+                              ul: ({ children }) => <ul style={{ margin: "0 0 10px 18px" }}>{children}</ul>,
+                              ol: ({ children }) => <ol style={{ margin: "0 0 10px 18px" }}>{children}</ol>,
+                              li: ({ children }) => <li style={{ marginBottom: 4 }}>{children}</li>,
+                            }}
+                          >
+                            {m.message}
+                          </ReactMarkdown>
+                        </div>
                     </div>
                 </div>
               );
