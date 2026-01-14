@@ -21,11 +21,12 @@ function LoginInner() {
   const params = useSearchParams();
   const next = useMemo(() => params.get("next") || "/", [params]);
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    setError(null);
+async function onSubmit(e: React.FormEvent) {
+  e.preventDefault();
+  setBusy(true);
+  setError(null);
 
+  try {
     const res = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -37,16 +38,19 @@ function LoginInner() {
       error?: string;
     };
 
-    setBusy(false);
-
     if (!res.ok || !data.ok) {
       setError(data.error || "Could not log in.");
       return;
     }
 
     router.replace(next);
+  } catch {
+    setError("Login failed (server/network error).");
+  } finally {
+    setBusy(false);
   }
-
+}
+  
   return (
     <div className={styles.page}>
       <form className={styles.card} onSubmit={onSubmit}>
