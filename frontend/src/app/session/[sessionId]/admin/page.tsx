@@ -306,15 +306,26 @@ export default function WizardPage({ params }: { params: { sessionId: string } }
             </div>
 
             <div className={styles.guidelines}>
-              <div className={styles.guidelinesTitle}>Markdown How-to</div>
-              <ul>
-                <li>**bold**</li>
-                <li>*italic*</li>
-                <li>* item for bulleted lists</li>
-                <li>1. item for numbered lists/li>
-                <li>shift return for paragraph breaks</li>
-              </ul>
-            </div>
+                <div className={styles.guidelinesTitle}>Formatting help</div>
+
+                <div className={styles.guidelinesText}>
+                  <p><strong>Bold</strong></p>
+                  <p><code>**bold text**</code></p>
+
+                  <p><strong>Italic</strong></p>
+                  <p><code>*italic text*</code></p>
+
+                  <p><strong>Paragraphs</strong></p>
+                  <p><code>Press Enter twice to start a new paragraph</code></p>
+
+                  <p><strong>Bullet list</strong></p>
+                  <pre>
+              - First item
+              - Second item
+              - Third item
+                  </pre>
+                </div>
+              </div>
           </section>
         </div>
 
