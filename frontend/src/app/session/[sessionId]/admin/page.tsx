@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./wizard.module.css";
 import { getSocket } from "@/lib/socket";
 import type { LogRow, SessionState, TranscriptMessage } from "@/lib/types";
+import ReactMarkdown from "react-markdown"
 
 const TONES = ["Engaging", "Encouraging", "Supportive", "Utilitarian"] as const;
 
@@ -183,7 +184,18 @@ export default function WizardPage({ params }: { params: { sessionId: string } }
                 transcript.map((m) => (
                   <div key=
                     {m.id} className={`${styles.msg} ${m.role === "participant" ? styles.msgUser : ""}`}>
-                    <div>{m.message ? <div className={styles.msgText}>{m.message}</div> : null} 
+                    <div>{m.message ? (
+                        <div className={styles.msgText}>
+                          <ReactMarkdown
+                            components={{
+                              p: ({ children }) => <p style={{ margin: "0 0 10px 0" }}>{children}</p>,
+                              strong: ({ children }) => <strong>{children}</strong>,
+                            }}
+                          >
+                            {m.message}
+                          </ReactMarkdown>
+                        </div>
+                      ) : null} 
                     {m.imageDataUrl ? (
                     <div className={styles.msgAttachment}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}

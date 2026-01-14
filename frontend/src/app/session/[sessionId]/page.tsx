@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { useRouter, useSearchParams } from "next/navigation";
 import { io, Socket } from "socket.io-client";
 import styles from "./participant.module.css";
@@ -190,7 +191,16 @@ export default function ParticipantSessionPage({ params }: { params: { sessionId
                           }}
                         />
                       )}
-                      <div className={styles.bubbleText}>{m.message}</div>
+                      <div className={styles.bubbleText}>
+                        <ReactMarkdown
+                          components={{
+                            p: ({ children }) => <p style={{ margin: "0 0 10px 0" }}>{children}</p>,
+                            strong: ({ children }) => <strong>{children}</strong>,
+                          }}
+                        >
+                          {m.message}
+                        </ReactMarkdown>
+                      </div>
                     </div>
                 </div>
               );
