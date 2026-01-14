@@ -23,7 +23,6 @@ type ScenarioMap = Record<string, string>; // scenarioKey -> sessionId
 
 export default function Home() {
   const router = useRouter();
-  const backend = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
 
   const [participantId, setParticipantId] = useState<string | null>(null);
   const [scenarioMap, setScenarioMap] = useState<ScenarioMap>({});
@@ -74,12 +73,13 @@ export default function Home() {
     // Otherwise create a new sessionId for this scenario
 const scenarioSlug = SCENARIO_SLUGS[scenarioIndex];
  
-    const res = await fetch(`${backend}/session/create`, {
+    const res = await fetch("/session/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({
-        participantId,      // your localStorage participant id (client-side)
-        scenarioSlug        // dinners | stock-up | gluten-free | best-deals
+        participantId,
+        scenarioSlug
       })
     });
     if (!res.ok) {
