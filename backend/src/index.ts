@@ -115,16 +115,14 @@ async function main() {
  
   const server = http.createServer(app);
  
-  const io = new Server(server, {
-
+    const io = new Server(server, {
     cors: {
-
       origin: FRONTEND_ORIGIN,
-
       credentials: true
-
-    }
-
+    },
+   
+    // ✅ allow larger payloads (base64 images). Default is ~1 MB and will disconnect.
+    maxHttpBufferSize: 25 * 1024 * 1024 // 25 MB
   });
  
   function uid(prefix: string) {
@@ -147,60 +145,74 @@ io.on("connection", (socket) => {
 
   socket.on(
   "send_message",
-  (payload: {
-    sessionId: string;
-    role: "participant" | "wizard";
-    message?: string;
-    tone?: string;
-    imageDataUrl?: string;
-    imageName?: string;
-  }) => {
-    const { sessionId, role, message, tone, imageDataUrl, imageName } = payload;
-    if (!sessionId || !role) return;
-
-    const trimmed = (message || "").trim();
-    const hasImage = typeof imageDataUrl === "string" && imageDataUrl.startsWith("data:image/");
-
-    // IMPORTANT: allow sending either text OR image
-    if (!trimmed && !hasImage) return;
-
-    const s = getOrCreateSession(sessionId);
-
-    const msg: TranscriptMessage = {
-      id: uid("m"),
-      timestamp: Date.now(),
-      role,
-      message: trimmed,
-      tone: role === "wizard" ? (tone || "Supportive") : undefined,
-      imageDataUrl: hasImage ? imageDataUrl : undefined,
-      imageName: hasImage ? imageName : undefined
-    };
-
-    // If wizard message, create/update log row tied to most recent participant message
-    if (role === "wizard") {
-      const lastUser = [...s.transcript].reverse().find((m) => m.role === "participant");
-      const userMessage = lastUser?.message ?? "";
-
-      const logRow: LogRow = {
-        id: uid("l"),
-        timestamp: msg.timestamp,
-        userMessage,
-        response: msg.message, // note: response log remains text-only
-        imageName: msg.imageName,
-        tone: msg.tone || "",
-        notes: "",
-        wizardMessageId: msg.id
+  (
+    payload: {
+      sessionId: string;
+      role: "participant" | "wizard";
+      message?: string;
+      tone?: string;
+      imageDataUrl?: string;
+      imageName?: string;
+    },
+    ack?: (ok: boolean, error?: string) => void
+  ) => {
+    try {
+      const { sessionId, role, message, tone, imageDataUrl, imageName } = payload;
+      if (!sessionId || !role) {
+        ack?.(false, "Missing sessionId or role");
+        return;
+      }
+ 
+      const trimmed = (message || "").trim();
+      const hasImage = typeof imageDataUrl === "string" && imageDataUrl.startsWith("data:image/");
+ 
+      // allow sending either text OR image
+      if (!trimmed && !hasImage) {
+        ack?.(false, "Empty message");
+        return;
+      }
+ 
+      const s = getOrCreateSession(sessionId);
+ 
+      const msg: TranscriptMessage = {
+        id: uid("m"),
+        timestamp: Date.now(),
+        role,
+        message: trimmed,
+        tone: role === "wizard" ? (tone || "Supportive") : undefined,
+        imageDataUrl: hasImage ? imageDataUrl : undefined,
+        imageName: hasImage ? imageName : undefined
       };
-
-      s.log.push(logRow);
-      msg.notes = logRow.notes;
+ 
+      if (role === "wizard") {
+        const lastUser = [...s.transcript].reverse().find((m) => m.role === "participant");
+        const userMessage = lastUser?.message ?? "";
+ 
+        const logRow: LogRow = {
+          id: uid("l"),
+          timestamp: msg.timestamp,
+          userMessage,
+          response: msg.message,
+          imageName: msg.imageName,
+          tone: msg.tone || "",
+          notes: "",
+          wizardMessageId: msg.id
+        };
+ 
+        s.log.push(logRow);
+        msg.notes = logRow.notes;
+      }
+ 
+      s.transcript.push(msg);
+      s.updatedAt = Date.now();
+ 
+      io.to(sessionId).emit("message", msg);
+      io.to(sessionId).emit("log_update", s.log);
+ 
+      ack?.(true);
+    } catch (err: any) {
+      ack?.(false, err?.message || "Send failed");
     }
-
-    s.transcript.push(msg);
-    s.updatedAt = Date.now();
-
-    io.to(sessionId).emit("message", msg);
-    io.to(sessionId).emit("log_update", s.log);
   }
 );
 
