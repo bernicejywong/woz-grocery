@@ -115,42 +115,26 @@ export default function WizardPage({ params }: { params: { sessionId: string } }
     if (!trimmed && !hasImage) return;
 
     socket.emit(
-
   "send_message",
-
   {
-
     sessionId,
-
     role: "wizard",
-
     message: trimmed,
-
     tone,
-
     imageDataUrl: attachedImage?.dataUrl,
-
     imageName: attachedImage?.name
-
   },
 
   (ok: boolean, error?: string) => {
-
     if (ok) {
-
       setDraft("");
-
       setAttachedImage(null);
-
     } else {
-
       alert(error ? `Failed to send: ${error}` : "Failed to send. Try a smaller image.");
-
     }
-
   }
-
 );
+  }
  
 
   function exportCsv() {
