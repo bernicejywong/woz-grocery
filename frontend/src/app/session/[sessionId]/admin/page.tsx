@@ -216,10 +216,22 @@ export default function WizardPage({ params }: { params: { sessionId: string } }
                     <div className={styles.msgAttachment}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                          src={m.imageDataUrl}
-                          alt={m.imageName || "Sent image"}
-                          className={styles.msgImage}
-                        />
+                      src={m.imageDataUrl}
+                      alt={m.imageName || "Sent image"}
+                      className={
+                        wideImages[m.id]
+                          ? styles.msgImageWide
+                          : styles.msgImageCard
+                      }
+                      onLoad={(e) => {
+                        const img = e.currentTarget;
+                        const isWide = img.naturalWidth / img.naturalHeight > 1.25;
+
+                        setWideImages((prev) =>
+                          prev[m.id] === isWide ? prev : { ...prev, [m.id]: isWide }
+                        );
+                      }}
+                    />
                     </div>
 
                     ) : null}

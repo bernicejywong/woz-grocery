@@ -316,6 +316,22 @@
   margin-top: 10px;
 }
 
+.msgImageCard {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+}
+
+.msgImageWide {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+}
+
 @media (max-width: 900px) {
   .twoCol {
     grid-template-columns: 1fr;

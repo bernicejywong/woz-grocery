@@ -221,6 +221,31 @@
   padding-bottom: 10px;
 }
 
+
+.chatImageCard {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+}
+
+.chatImageWide {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+}
+
+/* Keep everything responsive on small screens */
+@media (max-width: 900px) {
+  .chatImageCard,
+  .chatImageWide {
+    max-width: 92%;
+  }
+}
+
 @media (max-width: 860px) {
   .grid {
     grid-template-columns: 1fr;

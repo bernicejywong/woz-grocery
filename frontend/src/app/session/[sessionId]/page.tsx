@@ -33,6 +33,7 @@ export default function ParticipantSessionPage({ params }: { params: { sessionId
   const [draft, setDraft] = useState("");
   const [transcript, setTranscript] = useState<TranscriptMessage[]>([]);
   const [connected, setConnected] = useState(false);
+  const [wideImages, setWideImages] = useState<Record<string, boolean>>({});
 
   const socketRef = useRef<Socket | null>(null);
   const didApplyPrefillRef = useRef(false);
@@ -176,19 +177,24 @@ export default function ParticipantSessionPage({ params }: { params: { sessionId
                         <img
                           src={m.imageDataUrl}
                           alt={m.imageName || "attached image"}
-                          onLoad={() => {
+                          className={
+                            wideImages[m.id]
+                              ? styles.chatImageWide
+                              : styles.chatImageCard
+                          }
+                          onLoad={(e) => {
+                            const img = e.currentTarget;
+                            const isWide = img.naturalWidth / img.naturalHeight > 1.25;
+
+                            setWideImages((prev) =>
+                              prev[m.id] === isWide ? prev : { ...prev, [m.id]: isWide }
+                            );
+
+                            // keep your existing scroll-to-bottom behavior
                             const el = messagesRef.current;
-                            if (!el) return;
-                            el.scrollTo({ top: el.scrollHeight, behavior: "auto" });
+                            if (el) el.scrollTo({ top: el.scrollHeight, behavior: "auto" });
                           }}
-                          style={{
-                            maxWidth: "100%",
-                            width: "100%",
-                            height: "auto",
-                            borderRadius: 12,
-                            display: "block",
-                            marginBottom: m.message ? 8 : 0
-                          }}
+                          style={{ marginBottom: m.message ? 8 : 0 }}
                         />
                       )}
                       <div className={styles.bubbleText}>
