@@ -15,6 +15,7 @@ export default function WizardPage({ params }: { params: { sessionId: string } }
   const [tone, setTone] = useState<(typeof TONES)[number]>("Supportive");
   const [draft, setDraft] = useState("");
   const [connected, setConnected] = useState(false);
+  const [wideImages, setWideImages] = useState<Record<string, boolean>>({});
 
   type AttachedImage = { dataUrl: string; name: string };
    
